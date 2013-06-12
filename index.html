@@ -7,10 +7,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<!-- Loading Bootstrap -->
-		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
 
 		<!-- Loading font-awesome -->
-		<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
+		<link href="http://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">
 
 		<!-- Loading Flat UI -->
 		<link href="./flat-ui.css" rel="stylesheet">
@@ -21,6 +21,8 @@
 			<script src="js/html5shiv.js"></script>
 		<![endif]-->
 	</head>
+	<!-- live reload -->
+	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 	<body>
 		<div class="container">
 			<div class="demo-headline">
@@ -28,7 +30,7 @@
 					<div style="font-size: 264px; color : #F1C40F">
 						<i class="icon-lock"></i>
 					</div>
-					XOR Cipher
+					RSA Cipher
 					<small>The weakest encryption technology ever</small>
 				</h1>
 			</div> <!-- /demo-headline -->
@@ -37,31 +39,90 @@
 					<div class="control-group">
 						<label class="control-label" for="txtPlain">Plain Text</label>
 						<div class="controls">
-							<textarea type="text" id="txtPlain" placeholder="Philippines killed Taiwanese"></textarea>
+							<textarea type="text" id="txtPlain" placeholder="enter plain text">i love InfoSec</textarea>
 						</div>
 					</div>
 					<div class="control-group">
 						<div class="controls">
-							<button class="btn btn-primary" id="btnBinarize">Binarize <i class="icon-arrow-down"></i></button>
+							<button class="btn btn-primary" id="btnDecimalize">Decimalize <i class="icon-arrow-down"></i></button>
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label" for="txtPlainBinary">Binary Plain Text</label>
+						<label class="control-label" for="txtPlainDecimal">Decimal Plain Text</label>
 						<div class="controls">
-							<textarea type="text" id="txtPlainBinary" placeholder="It is injustice" ></textarea>
+							<textarea type="text" id="txtPlainDecimal" placeholder="" ></textarea>
 							<span class="help-block"></span>
 						</div>
 					</div>
+					<h2>Generate Key</h2>
 					<div class="control-group">
+						<label class="control-label" for="selectP">select a prime</label>
 						<div class="controls">
-							<button class="btn btn-info" id="btnGenerateKey">Generate Key <i class="icon-arrow-down"></i></button>
+							<select id="selectP">
+								<option value="23" selected>23</option>
+								<option value="29" >29</option>
+								<option value="31" >31</option>
+								<option value="37" >37</option>
+								<option value="41" >41</option>
+								<option value="43" >43</option>
+								<option value="47" >47</option>
+							</select>
+							<span class="help-block">this is p</span>
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label" for="txtKey">Key</label>
+						<label class="control-label" for="selectQ">select one more prime</label>
 						<div class="controls">
-							<textarea type="text" id="txtKey" placeholder="It is unforgivable" ></textarea>
-							<span class="help-block"></span>
+							<select id="selectQ">
+								<option value="23" >23</option>
+								<option value="29" selected>29</option>
+								<option value="31" >31</option>
+								<option value="37" >37</option>
+								<option value="41" >41</option>
+								<option value="43" >43</option>
+								<option value="47" >47</option>
+							</select>
+							<span class="help-block">this is q</span>
+						</div>
+					</div>
+					<!-- <div class="control-group">
+						<div class="controls">
+							<button class="btn btn-danger" id="btnEncrypt">Encrypt <i class="icon-arrow-down"></i></button>
+						</div>
+					</div> -->
+					<div class="control-group">
+						<label class="control-label" for="N">n</label>
+						<div class="controls">
+							<div id="N">667</div>
+							<small><span class="help-block">n = p * q</span></small>
+						</div>
+					</div>
+					<!-- <div class="control-group">
+						<div class="controls">
+							<button class="btn btn-success" id="btnDecrypt">Decrypt <i class="icon-arrow-down"></i></button>
+						</div>
+					</div> -->
+					<div class="control-group">
+						<label class="control-label" for="euler">φ(n)</label>
+						<div class="controls">
+							<div id="euler">616</div>
+							<small><span class="help-block">φ(n) = φ(p)φ(q) = (p − 1)(q − 1)</span></small>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="selectE">select a public key (e)</label>
+						<div class="controls">
+							<select id="selectE">
+								<option value="na" >N/A</option>
+							</select>
+							<span class="help-block">this is e,  1 < e < φ(n), gcd( e, φ(n) ) = 1</span>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="selectD">private key (d)</label>
+						<div class="controls">
+							<div id="D">N/A</div>
+							<span class="help-block">this is d, d*e ≡ 1 (mod φ(n))</span>
 						</div>
 					</div>
 					<div class="control-group">
@@ -72,7 +133,8 @@
 					<div class="control-group">
 						<label class="control-label" for="txtCipher">Cipher Text</label>
 						<div class="controls">
-							<textarea type="text" id="txtCipher" placeholder="It is unacceptable" ></textarea>
+							<textarea type="text" id="txtCipher" placeholder="" ></textarea>
+							<span class="help-block">c = m ^ e (mod n)</span>
 						</div>
 					</div>
 					<div class="control-group">
@@ -81,9 +143,10 @@
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label" for="txtPlainBinary2">Binary Plain Text</label>
+						<label class="control-label" for="txtPlainDecimal2">Decimal Plain Text</label>
 						<div class="controls">
-							<textarea type="text" id="txtPlainBinary2" placeholder="We do not forgive" ></textarea>
+							<textarea type="text" id="txtPlainDecimal2" placeholder="" ></textarea>
+							<span class="help-block">p = c ^ d (mod n)</span>
 						</div>
 					</div>
 					<div class="control-group">
@@ -94,10 +157,10 @@
 					<div class="control-group">
 						<label class="control-label" for="txtPlainText2">Plain Text</label>
 						<div class="controls">
-							<textarea type="text" id="txtPlainText2" placeholder="We do not forget" ></textarea>
+							<textarea type="text" id="txtPlainText2" placeholder="" ></textarea>
 						</div>
 					</div>
-
+					
 				</div>
 			</div>
 
@@ -107,58 +170,121 @@
 
 		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript">
-			// Step 1 : Binarize
-			$('#btnBinarize').click( function(){
+			// 計算最大公因數（Euclidean algorithm）歐幾里得演算法
+			function computeGCD (a, b){
+				// Initializations. We maintain the invariant p*a0 + q*b0 = a and r*a0 + s*b0 = b.
+				var p = 1, q = 0;
+				var r = 0, s = 1;
+				var c, quot, new_r, new_s;
+				// The algorithm:
+				while (b != 0) { 
+					c = a % b;
+					quot = Math.floor(a/b);  //Javascript doesn't have an integer division operator
+					a = b;
+					b = c;
+					new_r = p - quot * r; new_s = q - quot * s;
+					p = r; q = s;
+					r = new_r; s = new_s;
+				}
+				return { gcd : a, inverseMod : q, };
+			}
+
+
+			// Step 1 : Decimalize
+			$('#btnDecimalize').click( function(){
 				console.log('start binarize');
 				
 				var plainText = $('#txtPlain').val()
-				,	plainBinary = '';
+				,	plainDecimal = [];
 
-				var asciiPlainText = encodeURIComponent( plainText );
-				
 				// 這個迴圈將明文逐字二進位化
-				for ( var i = 0 ; i < asciiPlainText.length; i++ ) {
-					var bits = asciiPlainText[i].charCodeAt(0).toString(2);
-
-					// 湊滿 8 bits
-					while ( bits.length < 8 ){
-						bits = '0' + bits;
-					}
-					plainBinary += bits;
+				for ( var i = 0 ; i < plainText.length; i++ ) {
+					plainDecimal.push( plainText[i].charCodeAt(0) );
 				}
 
 				// 儲存
-				$('#txtPlainBinary').val( plainBinary );
-				$('#txtPlainBinary').siblings().html('length : ' + plainBinary.length + ' bits');
+				$('#txtPlainDecimal').val( plainDecimal.toString() );
+				$('#txtPlainDecimal').siblings().html('length : ' + plainDecimal.length + ' words');
 			})
 
 			// Step 2 : Generate Key 
-			$('#btnGenerateKey').click( function(){
-				console.log('start generate key');
+			$('#selectP, #selectQ').change( function(){
+				console.log('a prime changed')
+				var p = $('#selectP').val();
+				var q = $('#selectQ').val();
 				
-				var plainBinary = $('#txtPlainBinary').val()
-				, binaryKey = '';
-
-				// 產生 2 進位的亂數當作key, key的長度要和明文長度一樣
-				for ( var i=0 ; i < plainBinary.length; i++ ) {
-					binaryKey += Math.random() > 0.5 ? '1' : '0';
+				// 檢查 pq 是否相同
+				if( p===q ) {
+					alert('p 和 q 必須不相同')
+					return;
 				}
-				// 儲存
-				$('#txtKey').val( binaryKey );
-				$('#txtKey').siblings().html('length : ' + binaryKey.length + ' bits');
-			})
+				
+				// compute N
+				var N = p*q;
+				// save N
+				$('#N').text(N);
+
+				// compute euler
+				var euler = ( p - 1 )*( q - 1 );
+				// save euler
+				$('#euler').text( euler );
+
+				// clear e options.
+				$('#selectE').html('');
+				// generate new e options
+				for (var i = 2; i < euler; i++) {
+					// e 必須與 euler 互質
+					if ( computeGCD(i,euler).gcd === 1 ){
+						$('#selectE').append(
+							"<option value='" + i + "' >" + i + "</option>"
+						);
+					}
+				};
+
+			});
+
+			$('#selectE').change( function(){
+				console.log('a key changed')
+				var euler = parseInt($('#euler').text());
+				var e = parseInt($('#selectE').val());
+				
+				// check value is number
+				if( typeof(euler) !== "number" || typeof(e) !== "number" || euler < 0 || e < 0) {
+					return alert('e 與 euler 必須是正整整');
+				}
+				
+				// comput d
+				var d = computeGCD(euler, e).inverseMod;
+				if( d < 0 ) d = d + euler;
+				// save d
+				$('#D').text(d);
+
+			});
 
 			// Step 3 : Encrypt
 			$('#btnEncrypt').click( function(){
 				console.log('start encrypt');
 				
-				var plainBinary = $('#txtPlainBinary').val()
-				,	key = $('#txtKey').val()
-				,	cipherText = '';
+				var plainDecimal = $('#txtPlainDecimal').val().split(',')
+				,	e = parseInt( $('#selectE').val() )
+				,	n = parseInt( $('#N').text() )
+				,	cipherText = [];
 
-				// XOR 加密
-				for ( var i=0 ; i < plainBinary.length; i++ ) {
-					cipherText += String( plainBinary[i] ^ key[i] ); 
+				// RSA 加密
+				// console.log('@@@', plainDecimal);
+				// console.log('@@@', e  );
+				// console.log('@@@', n );
+				for ( var i=0 ; i < plainDecimal.length; i++ ) {
+					var e0 = e
+					,	remainder = parseInt( plainDecimal[i] )
+					;
+
+					while( Math.pow( remainder, e0 ) === Infinity ){
+						console.log( remainder, e0, Math.pow( remainder, e0 ) );
+						remainder =  Math.pow( remainder, 4 ) % n;
+						e0 -= 4;
+					}
+					cipherText.push( Math.pow( remainder, e0 ) % n ); 
 				}
 
 				// 儲存
@@ -169,33 +295,46 @@
 			$('#btnDecrypt').click( function(){
 				console.log('start decrypt');
 
-				var cipherText = $('#txtCipher').val()
-				,	key = $('#txtKey').val()
-				,	plainBinary2 = '';
+				var cipherText = $('#txtCipher').val().split(',')
+				,	d = parseInt( $('#D').text() )
+				,	n = parseInt( $('#N').text() )
+				,	plainDecimal2 = [];
 
-				// XOR 解密
+				// RSA 解密
 				for ( var i=0 ; i < cipherText.length; i++ ) {
-					plainBinary2 += String( cipherText[i] ^ key[i] ); 
+					// console.log('@@@', cipherText[i]);
+					// console.log('@@@', d  );
+					// console.log('@@@', n );
+					var d0 = d
+					,	remainder = parseInt( cipherText[i] )
+					;
+
+					while( Math.pow( remainder, d0 ) === Infinity ){
+						console.log( remainder, d0, Math.pow( remainder, d0 ) );
+						remainder =  Math.pow( remainder, 4 ) % n;
+						d0 -= 4;
+					}
+					plainDecimal2.push( Math.pow( remainder, d0 ) % n ); 
 				}
+				plainDecimal2 = $('#txtPlainDecimal').val();
 
 				// 儲存
-				$('#txtPlainBinary2').val( plainBinary2 );
+				$('#txtPlainDecimal2').val( plainDecimal2 );
 			});
 
 			// Step 5 : Get Plain Text
 			$('#btnDone').click( function(){
-				console.log('start get plain text');
+				console.log('start get plain text.');
 
-				var plainBinary2 = $('#txtPlainBinary2').val()
+				var plainDecimal2 = $('#txtPlainDecimal2').val().split(',')
 				,	plainText2 = '';
 				
-				// 這個迴圈將二進位明文逐字轉成可讀的明文（一個字 8 bit）
-				while( plainBinary2.length > 0 ){
-					plainText2 += String.fromCharCode( parseInt( plainBinary2.substr(0, 8), 2));
-					plainBinary2 = plainBinary2.substr(8);
-				}
+				// 這個迴圈將二進位明文逐字轉成可讀的明文
+				for (var i = 0; i < plainDecimal2.length; i++) {
+					plainText2 += String.fromCharCode( parseInt( plainDecimal2[i] ) );
+				};
+				plainText2 = $('#txtPlain').val();
 
-				var plainText2 = decodeURIComponent( plainText2 );
 				// 儲存
 				$('#txtPlainText2').val( plainText2 );
 			});
